@@ -1,24 +1,45 @@
+/*
 function sleep(milliSeconds){
   var startTime=new Date().getTime();
   while(new Date().getTime() < startTime + milliSeconds);
 }
+*/
 
-function home(){
+var exec=require("child_process").exec
+
+function home(response){
   console.log("request handler 'home' was called.");
-  return "hello, world";
-}
-
-function start(){
-  console.log("request handler 'start' was called.");
+  exec("find /home/hd-user/github/", function(error, stdout, stderr){
   
-  sleep(10000);
-
-  return "hello, start";
+    response.writeHead(200,{"Content-Type": "text/plain"});
+    response.write("Hello, World!\n");
+    response.write(stdout);
+    response.write("\nit is over!\n");
+    response.end();
+  });
 }
 
-function upload(){
+function start(response){
+  console.log("request handler 'start' was called.");
+ 
+  //sleep(10000);
+
+  var content="empty";
+  exec("find /", function(error, stdout, stderr){
+    response.writeHead(200,{"Content-Type":"text/plain"});
+    response.write(stdout);
+    response.end();
+  });
+
+  return content;
+}
+
+function upload(response){
   console.log("request handler 'upload' was called.");
-  return "hello, upload";
+  
+  response.writeHead(200, {"Content-Type":"text/plain"});
+  response.write("Hello upload!");
+  response.end();
 }
 
 exports.home=home
