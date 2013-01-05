@@ -4,10 +4,10 @@ function sleep(milliSeconds){
   while(new Date().getTime() < startTime + milliSeconds);
 }
 */
+var querystring=require("querystring");
+var exec=require("child_process").exec;
 
-var exec=require("child_process").exec
-
-function home(response){
+function home(response, postData){
   console.log("request handler 'home' was called.");
   exec("find /home/hd-user/github/", function(error, stdout, stderr){
   
@@ -19,26 +19,38 @@ function home(response){
   });
 }
 
-function start(response){
+function start(response, postData){
   console.log("request handler 'start' was called.");
  
   //sleep(10000);
 
-  var content="empty";
-  exec("find /", function(error, stdout, stderr){
-    response.writeHead(200,{"Content-Type":"text/plain"});
-    response.write(stdout);
-    response.end();
-  });
+  var body="<!DOCTYPE html>"+
+           "<html>"+
 
-  return content;
+           "<head>"+
+           "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />"+
+           "<title>start page</title>"+
+           "</head>"+
+           "<body>"+
+           "<form action='/upload' method='post'>"+
+           "<textarea rows='30' cols='40' name='text'></textarea>"+
+           "<br/><input type='text' name='name' />"+
+           "<br/><input type='submit' value='submit text' />"+
+           "</form>"+
+           "</body>"+ 
+           "</html>";
+
+    response.writeHead(200,{"Content-Type":"text/html"});
+    response.write(body);
+    response.end();
+
 }
 
-function upload(response){
+function upload(response, postData){
   console.log("request handler 'upload' was called.");
   
   response.writeHead(200, {"Content-Type":"text/plain"});
-  response.write("Hello upload!");
+  response.write("You've sent: "+querystring.parse(postData).text);
   response.end();
 }
 
